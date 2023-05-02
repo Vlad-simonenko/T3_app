@@ -1,17 +1,19 @@
-import { type AppType } from "next/dist/shared/lib/utils";
+import { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
+import type { AppProps } from "next/app";
 import "y/styles/globals.scss";
 
-const MyApp: AppType = ({
+function MyApp({
   Component,
-  //@ts-ignore
-  pageProps: { session, ...pageProps },
-}) => {
+  pageProps,
+}: AppProps<{
+  session: Session;
+}>) {
   return (
-    <SessionProvider session={session}>
+    <SessionProvider session={pageProps.session}>
       <Component {...pageProps} />
     </SessionProvider>
   );
-};
+}
 
 export default MyApp;

@@ -1,12 +1,11 @@
 import { Button } from "antd";
 import React from "react";
-import DiscordLogo from "y/styles/assets/svg/DiscordLogo";
 import styles from "./ActionButton.module.scss";
 import classNames from "classnames";
 
 interface TActionButtonProps {
   text: string;
-  onClick?: (e: any) => void;
+  onClick?: (event: React.MouseEvent<HTMLElement>) => void;
   href?: string;
   style?: string;
   icon?: React.ReactNode;
