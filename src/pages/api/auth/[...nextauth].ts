@@ -3,6 +3,7 @@ import DiscordProvider from "next-auth/providers/discord";
 import VkProvider from "next-auth/providers/vk";
 import TwitchProvider from "next-auth/providers/twitch";
 import GitHubProvider from "next-auth/providers/github";
+console.log(process.env.NEXTAUTH_SECRET);
 
 export const authOptions = {
   // Configure one or more authentication providers
@@ -24,5 +25,6 @@ export const authOptions = {
       clientSecret: process.env.GITHUB_SECRET as string,
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRET,
 };
 export default NextAuth(authOptions);

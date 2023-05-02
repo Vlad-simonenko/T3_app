@@ -1,6 +1,7 @@
 version: "3.9"
 services:
   app:
+    env_file: .env.production
     platform: "linux/amd64"
     build:
       context: .
@@ -11,3 +12,5 @@ services:
     ports:
       - "3000:3000"
     image: t3-app
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/Todo?schema=public

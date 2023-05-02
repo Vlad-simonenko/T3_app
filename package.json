@@ -2,19 +2,29 @@
   "name": "test-app",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "migration": "npx prisma migrate dev --name init",
+    "seed": "esbuild prisma/seed.ts --outfile=node_modules/tmp-seed.cjs --bundle --format=cjs --external:prisma --external:@prisma/client && node node_modules/tmp-seed.cjs --preview-feature",
+    "server:start": "cd src/server && npx ts-node script.ts && npx prisma studio"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
+    "@prisma/client": "^4.13.0",
     "antd": "^5.4.6",
+    "dotenv": "^16.0.3",
     "next": "^13.2.4",
     "next-auth": "^4.22.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "sass": "^1.62.1",
+    "ts-node": "^10.9.1",
     "zod": "^3.21.4"
   },
   "devDependencies": {
@@ -24,8 +34,10 @@
     "@types/react-dom": "^18.0.11",
     "@typescript-eslint/eslint-plugin": "^5.56.0",
     "@typescript-eslint/parser": "^5.56.0",
+    "esbuild": "^0.17.18",
     "eslint": "^8.36.0",
     "eslint-config-next": "^13.2.4",
+    "prisma": "^4.13.0",
     "typescript": "^5.0.2"
   },
   "ct3aMetadata": {
