@@ -71,38 +71,7 @@ const Home: NextPage = () => {
         )}
       </Header>
       <Layout>
-        <Content className={styles.mainContainer}>
-          <div className={styles.mainContant}>
-            <div className={styles.cardContainer}>
-              <div className={styles.cardTitle}>
-                <EditIcon />
-              </div>
-              <div className={styles.cardBody}>
-                <div className={styles.cardBodyTitle}>1231</div>
-                <div className={styles.cardBodyDescription}>22313</div>
-              </div>
-              <div className={styles.cardFooter}>
-                <div className={styles.cardFooterIcons}>
-                  <Avatar size={30} alt="U" src={session?.user?.image} />
-                </div>
-                <div className={styles.cardFooterInfo}>
-                  <div className={styles.cardFooterSubTasks}>
-                    Subtasks
-                    <span className={styles.cardFooterSubTasksNumber}> 7</span>
-                  </div>
-                  <div className={styles.cardFooterHours}>
-                    Time
-                    <span className={styles.cardFooterSubTasksNumber}>
-                      12 h
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <Input onChange={(e) => setTask(e.target.value)} />
-            <Button>Create</Button>
-          </div>
-        </Content>
+       
       </Layout>
       <Footer>footer</Footer>
     </Layout>
