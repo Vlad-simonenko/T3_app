@@ -1,0 +1,9 @@
+.taskCreatorWrapper {
+  background-color: red;
+  width: 100%;
+  .taskCreatorContent {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+  }
+}

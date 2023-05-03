@@ -1,9 +1,8 @@
 import { Avatar, Button, Input } from "antd";
 import React, { useState } from "react";
-import styles from "./ActionButton.module.scss";
+import styles from "./SubTaskCard.module.scss";
 import EditIcon from "y/styles/assets/svg/EditIcon";
-import {  useSession } from "next-auth/react";
-import {Layout} from "antd";
+import { useSession } from "next-auth/react";
 interface TTaskCardProps {
   text: string;
   onClick?: (event: React.MouseEvent<HTMLElement>) => void;
@@ -20,14 +19,12 @@ interface TTaskCardProps {
     | undefined;
 }
 
-export const ActionButton = (props: TTaskCardProps) => {
+export const TaskCard = (props: TTaskCardProps) => {
   const { data: session, status } = useSession();
-  const { Header, Footer, Content } = Layout;
 
   const [task, setTask] = useState("");
   return (
-    <Content className={styles.mainContainer}>
-    <div className={styles.mainContant}>
+    <>
       <div className={styles.cardContainer}>
         <div className={styles.cardTitle}>
           <EditIcon />
@@ -47,16 +44,11 @@ export const ActionButton = (props: TTaskCardProps) => {
             </div>
             <div className={styles.cardFooterHours}>
               Time
-              <span className={styles.cardFooterSubTasksNumber}>
-                12 h
-              </span>
+              <span className={styles.cardFooterSubTasksNumber}>12 h</span>
             </div>
           </div>
         </div>
       </div>
-      <Input onChange={(e) => setTask(e.target.value)} />
-      <Button>Create</Button>
-    </div>
-  </Content>
+    </>
   );
 };

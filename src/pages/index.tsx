@@ -1,20 +1,9 @@
-import {
-  Avatar,
-  Button,
-  Dropdown,
-  Input,
-  Layout,
-  MenuProps,
-  Typography,
-} from "antd";
+import { Layout, MenuProps, Typography } from "antd";
 import styles from "../styles/index.module.scss";
 import { type NextPage } from "next";
 import { signOut, useSession } from "next-auth/react";
-import { DownOutlined } from "@ant-design/icons";
-import Logo from "y/styles/assets/svg/Logo";
-import { ActionButton } from "y/atoms";
-import { useState } from "react";
-import EditIcon from "y/styles/assets/svg/EditIcon";
+import { CardList, HeaderContent } from "y/organism";
+import { Sider } from "y/molecules";
 
 const Home: NextPage = () => {
   const { data: session, status } = useSession();
@@ -39,41 +28,17 @@ const Home: NextPage = () => {
     },
   ];
 
-  const { Header, Footer, Content } = Layout;
-
-  const [task, setTask] = useState("");
+  const { Header } = Layout;
 
   return (
-    <Layout>
+    <Layout className={styles.contentWrapper}>
       <Header className={styles.headerWrapper}>
-        <div className={styles.headerLogo}>Wh1tePython</div>
-        <span className={styles.headerIcon}>
-          <Logo />
-        </span>
-        {status === "authenticated" ? (
-          <>
-            <Dropdown
-              className={styles.dropdownWrapper}
-              trigger={["click"]}
-              menu={{ items }}
-              placement="bottomRight"
-            >
-              <Avatar size={64} alt="U" src={session?.user?.image} />
-            </Dropdown>
-            <DownOutlined className={styles.downArrow} />
-          </>
-        ) : (
-          <ActionButton
-            style={styles.signInButton}
-            text={"sign in"}
-            href="/api/auth/signin"
-          />
-        )}
+        <HeaderContent items={items} session={session} status={status} />
       </Header>
-      <Layout>
-       
+      <Layout className={styles.mainContainer}>
+        <Sider />
+        <CardList session={session} />
       </Layout>
-      <Footer>footer</Footer>
     </Layout>
   );
 };

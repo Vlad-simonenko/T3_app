@@ -1,0 +1,55 @@
+@import "src/styles/assets/mixin.scss";
+
+%cardContent {
+  @include flexContent(
+    $fDirection: row,
+    $aItems: center,
+    $jContent: space-between,
+    $fWrap: nowrap
+  );
+  border-radius: 10px;
+  padding: 20px;
+  min-width: 280px;
+  min-height: 50px;
+  height: fit-content;
+  background-color: white;
+  font-family: "Roboto";
+  font-weight: 700;
+  position: relative;
+}
+%svgIcons {
+  cursor: pointer;
+  position: absolute;
+  right: 10px;
+}
+
+.mainTaskCardWrapper {
+  @include flexContent(
+    $fDirection: row,
+    $aItems: flex-start,
+    $jContent: flex-start,
+    $fWrap: nowrap
+  );
+  width: 100%;
+  height: 100%;
+  padding: 20px 0 20px 40px;
+  gap: 30px;
+  background-color: red;
+  .mainTaskCardContant {
+    @extend %cardContent;
+    > svg {
+      @extend %svgIcons;
+      width: 20px;
+      height: 20px;
+    }
+  }
+  .mainTaskCardAddContant {
+    @extend %cardContent;
+    opacity: 0.5;
+    > svg {
+      @extend %svgIcons;
+      width: 28px;
+      height: 28px;
+    }
+  }
+}
