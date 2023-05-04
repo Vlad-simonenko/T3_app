@@ -9,6 +9,8 @@ interface TActionButtonProps {
   href?: string;
   style?: string;
   icon?: React.ReactNode;
+  size: "small" | "medium" | "large";
+  margin?: "top" | "bottom" | "left" | "right" | "all" | "null";
   type?:
     | "text"
     | "primary"
@@ -17,16 +19,36 @@ interface TActionButtonProps {
     | "default"
     | "dashed"
     | undefined;
+  disabled?: boolean;
+  htmlType?: "button" | "submit" | "reset" | undefined;
 }
 
 export const ActionButton = (props: TActionButtonProps) => {
-  const { onClick, text, href, style, type, icon } = props;
+  const {
+    onClick,
+    text,
+    href,
+    style,
+    type,
+    icon,
+    size,
+    margin,
+    disabled,
+    htmlType,
+  } = props;
 
   return (
     <Button
+      htmlType={htmlType}
       icon={icon}
       href={href}
-      className={classNames(style, styles.actionButton)}
+      disabled={disabled}
+      className={classNames(
+        style,
+        styles.actionButton,
+        styles[size || "middle"],
+        styles[margin || "null"]
+      )}
       onClick={onClick}
       type={type}
     >

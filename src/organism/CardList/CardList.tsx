@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styles from "./CardList.module.scss";
 import { Session } from "next-auth/core/types";
-import { MainTaskCard } from "y/molecules";
+import { MainTaskCard, TMainTask } from "y/molecules";
 
 interface TCardListProps {
   session: Session | null;
@@ -9,7 +9,7 @@ interface TCardListProps {
 
 export const CardList = (props: TCardListProps) => {
   const { session } = props;
-  const [mainTask, setMainTask] = useState([]);
+  const [mainTask, setMainTask] = useState<TMainTask[]>([]);
 
   return (
     <div className={styles.cardListWrapper}>
@@ -21,68 +21,9 @@ export const CardList = (props: TCardListProps) => {
         </div>
       </div>
       <div className={styles.cardListMain}>
-        <MainTaskCard mainTask={mockData} setMainTask={setMainTask} />
+        <MainTaskCard mainTask={mainTask} setMainTask={setMainTask} />
       </div>
       <div className={styles.cardListFooter}> footer</div>
     </div>
   );
 };
-
-const mockData = [
-  {
-    id: 1,
-    title: "test 1",
-  },
-  {
-    id: 1,
-    title: "test 1",
-  },
-  {
-    id: 1,
-    title: "test 1",
-  },
-  {
-    id: 1,
-    title: "test 1",
-  },
-  {
-    id: 1,
-    title: "test 1",
-  },
-  {
-    id: 1,
-    title: "test 1",
-  },
-  {
-    id: 1,
-    title: "test 1",
-  },
-  {
-    id: 1,
-    title: "test 1",
-  },
-  {
-    id: 1,
-    title: "test 1",
-  },
-  {
-    id: 1,
-    title: "test 1",
-  },
-  {
-    id: 1,
-    title: "test 1",
-  },
-  {
-    id: 1,
-    title: "test 1",
-  },
-  {
-    id: 1,
-    title: "test 1",
-  },
-  {
-    id: 1,
-    title: "test 1",
-  },
-];
