@@ -46,7 +46,7 @@ export const ActionButton = (props: TActionButtonProps) => {
       className={classNames(
         style,
         styles.actionButton,
-        styles[size || "middle"],
+        styles[size || "medium"],
         styles[margin || "null"]
       )}
       onClick={onClick}

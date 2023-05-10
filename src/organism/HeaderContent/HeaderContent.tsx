@@ -39,6 +39,7 @@ export const HeaderContent = (props: THeaderContentProps) => {
           style={styles.signInButton}
           text={"sign in"}
           href="/api/auth/signin"
+          size={"medium"}
         />
       )}
     </>

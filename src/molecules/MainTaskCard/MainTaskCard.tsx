@@ -22,13 +22,18 @@ export const MainTaskCard = (props: TMainTaskCardProps) => {
 
   const [mainTaskTitle, setMainTaskTitle] = useState("");
 
+  const [updMainTaskTitle, setUpdMainTaskTitle] = useState("");
+
   const [mainTaskDescription, setMainTaskDescription] = useState("");
+
+  const [updMainTaskDescription, setUpdMainTaskDescription] = useState("");
 
   const newPost = {
     id: Date.now(),
     title: mainTaskTitle,
     description: mainTaskDescription,
   };
+
   const [onClicked, setOnClicked] = useState(false);
 
   const setTask = (newPost: TMainTask) => {
@@ -39,57 +44,58 @@ export const MainTaskCard = (props: TMainTaskCardProps) => {
 
   const [onEdit, setOnEdit] = useState(false);
 
-  const editTask = (id: number) => {
-    setMainTaskTitle(mainTaskTitle),
-      setMainTaskDescription(mainTaskDescription);
+  const editPost = {
+    id: Date.now(),
+    title: updMainTaskTitle,
+    description: updMainTaskDescription,
   };
+  const editTask = (id: number) => {
+    if (mainTask.find((editTask) => editTask.id === id)) {
+      setMainTask([...mainTask, editPost]),
+        setMainTaskTitle(""),
+        setMainTaskDescription("");
+    }
+  };
+
+  console.log(mainTask);
 
   return (
     <div className={styles.mainTaskCardWrapper}>
       {mainTask?.map((task: TMappedMainTask) => (
         <div className={styles.mainTaskCardContant} key={task.id}>
-          {console.log(
-            mainTask.find((editTask) => editTask.id === task.id)?.title
-          )}
           <div className={styles.mainTaskCardTitle}>{task.title}</div>
           <div className={styles.mainTaskCardDescription}>
             {task.description}
           </div>
-          <div
-            onClick={() => editTask(task.id)}
-            className={styles.mainTaskAddCardIcon}
-          >
-            {onEdit ? (
+          <div className={styles.mainTaskAddCardIcon}>
+            {mainTask?.find((editTask) => editTask?.id === task?.id) &&
+            onEdit ? (
               <>
                 <InputField
                   onFocus
                   placeholder={"Название задачи"}
-                  onChange={setMainTaskTitle}
-                  value={
+                  onChange={setUpdMainTaskTitle}
+                  defaultValue={
                     mainTask.find((editTask) => editTask.id === task.id)?.title
                   }
+                  value={updMainTaskTitle}
                 />
                 <InputField
                   placeholder={"Описание задачи"}
-                  onChange={setMainTaskDescription}
-                  value={
+                  onChange={setUpdMainTaskDescription}
+                  defaultValue={
                     mainTask.find((editTask) => editTask.id === task.id)
                       ?.description
                   }
+                  value={updMainTaskDescription}
                 />
                 <ActionButton
                   size="medium"
                   margin="top"
-                  onClick={
-                    mainTaskTitle.length !== 0
-                      ? () => {
-                          editTask(task.id), setOnEdit(false);
-                        }
-                      : () => {
-                          setOnEdit(false);
-                        }
-                  }
-                  text={"Создать"}
+                  onClick={() => {
+                    editTask(task.id), setOnEdit(false);
+                  }}
+                  text={"Обновить"}
                 />
                 <ActionButton
                   size="medium"

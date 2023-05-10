@@ -10,10 +10,12 @@ interface TActionButtonProps {
   placeholder?: string;
   required?: boolean;
   onFocus?: boolean;
+  defaultValue?: string;
 }
 
 export const InputField = (props: TActionButtonProps) => {
-  const { onChange, value, placeholder, required, onFocus } = props;
+  const { onChange, value, placeholder, required, onFocus, defaultValue } =
+    props;
 
   return (
     <Input
@@ -25,6 +27,7 @@ export const InputField = (props: TActionButtonProps) => {
       onChange={(e) => onChange(e.target.value)}
       value={value}
       placeholder={placeholder}
+      defaultValue={defaultValue}
     />
   );
 };
