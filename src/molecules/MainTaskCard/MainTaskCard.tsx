@@ -57,8 +57,6 @@ export const MainTaskCard = (props: TMainTaskCardProps) => {
     }
   };
 
-  console.log(mainTask);
-
   return (
     <div className={styles.mainTaskCardWrapper}>
       {mainTask?.map((task: TMappedMainTask) => (

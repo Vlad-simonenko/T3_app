@@ -4,21 +4,34 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://prisma:prisma@localhost:5432/postgres?schema=public"
+  url      = "postgresql://nestAuth:nestAuth@localhost:5432/nestAuth?schema=public"
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
+  id       Int        @id @default(autoincrement())
+  email    String     @unique
+  name     String?
+  tasks    Task[]
+  Subtasks Subtasks[]
 }
 
-model Post {
+model Subtasks {
   id        Int     @id @default(autoincrement())
   title     String
   content   String?
   published Boolean @default(false)
   authorId  Int
   author    User    @relation(fields: [authorId], references: [id])
+  Task      Task?   @relation(fields: [taskId], references: [id])
+  taskId    Int?
+}
+
+model Task {
+  id        Int        @id @default(autoincrement())
+  title     String
+  content   String?
+  published Boolean    @default(false)
+  authorId  Int
+  author    User       @relation(fields: [authorId], references: [id])
+  Subtasks  Subtasks[]
 }

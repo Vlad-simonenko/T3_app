@@ -1,37 +1,49 @@
 version: "3"
 services:
-  prisma:
-    image: prismagraphql/prisma:1.34
-    restart: always
+  nest-api:
+    container_name: nest-api
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "4466:4466"
-    environment:
-      PRISMA_CONFIG: |
-        port: 4466
-        databases:
-          default:
-            connector: postgres
-            host: postgres
-            database: "db"
-            port: 5432
-            user: prisma
-            password: prisma
-            schema: public
-            migrations: true
+      - 3000:3000
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    networks:
+      - t3-network
+
   postgres:
     image: postgres:10.3
+    container_name: postgres
     restart: always
     ports:
-      - "5432:5432"
+      - 5432:5432
+    env_file:
+      - .env
     environment:
-      POSTGRES_USER: prisma
-      POSTGRES_PASSWORD: prisma
+      - POSTGRES_USER=nestAuth
+      - POSTGRES_PASSWORD=nestAuth
+      - POSTGRES_DB=nestAuth
+      - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - postgres:/var/lib/postgresql/data
+    networks:
+      - t3-network
+    build:
+      context: .
+
   adminer:
     image: adminer
     restart: always
     ports:
       - 8080:8080
+    networks:
+      - t3-network
 volumes:
-  postgres: ~
+  postgres:
+    name: nest-db
+
+networks:
+  t3-network:

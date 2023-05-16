@@ -1,12 +1,21 @@
 import { PrismaClient } from "@prisma/client";
-import express from "express";
 
-export async function getStaticProps() {
-  const prisma = new PrismaClient();
-  const posts = await prisma.post.findMany();
-  console.log("3213213");
+// PrismaClient is attached to the `global` object in development to prevent
+// exhausting your database connection limit.
+//
+// Learn more:
+// https://pris.ly/d/help/next-js-best-practices
 
-  return {
-    props: { posts },
-  };
+declare global {
+  var prisma: PrismaClient | undefined;
 }
+
+const prisma =
+  global.prisma ||
+  new PrismaClient({
+    log: ["error"],
+  });
+
+if (process.env.NODE_ENV !== "production") global.prisma = prisma;
+
+export default prisma;

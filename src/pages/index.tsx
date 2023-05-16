@@ -4,9 +4,13 @@ import { type NextPage } from "next";
 import { signOut, useSession } from "next-auth/react";
 import { CardList, HeaderContent } from "y/organism";
 import { Sider } from "y/molecules";
+import { PrismaClient } from "@prisma/client";
+import prisma from "y/server/server";
 
-const Home: NextPage = () => {
+const Home: NextPage = (users) => {
   const { data: session, status } = useSession();
+
+  console.log(users);
 
   const items: MenuProps["items"] = [
     {
@@ -42,5 +46,12 @@ const Home: NextPage = () => {
     </Layout>
   );
 };
-
 export default Home;
+
+export function getServerSideProps() {
+  const users = prisma.user.findMany();
+
+  return {
+    props: JSON.parse(JSON.stringify(users)),
+  };
+}

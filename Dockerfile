@@ -1,12 +1,11 @@
 ##### DEPENDENCIES
 
-FROM --platform=linux/amd64 node:16-alpine3.17 AS deps
-RUN apk add --no-cache libc6-compat openssl1.1-compat
+FROM --platform=linux/amd64 node:18-alpine3.16 AS deps
 WORKDIR /app
 
 # Install Prisma Client - remove if not using Prisma
 
-COPY prisma ./
+COPY prisma ./prisma/
 
 # Install dependencies based on the preferred package manager
 
@@ -21,12 +20,14 @@ RUN \
 
 ##### BUILDER
 
-FROM --platform=linux/amd64 node:16-alpine3.17 AS builder
+FROM --platform=linux/amd64 node:18-alpine3.16 AS builder
 ARG DATABASE_URL
 ARG NEXT_PUBLIC_CLIENTVAR
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+
+RUN npm run build
 
 # ENV NEXT_TELEMETRY_DISABLED 1
 
@@ -39,10 +40,10 @@ RUN \
 
 ##### RUNNER
 
-FROM --platform=linux/amd64 node:16-alpine3.17 AS runner
+FROM --platform=linux/amd64 node:18-alpine3.16 AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
+ENV NODE_ENV local
 
 # ENV NEXT_TELEMETRY_DISABLED 1
 
@@ -56,8 +57,11 @@ COPY --from=builder /app/package.json ./package.json
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
+
 USER nextjs
 EXPOSE 3000
 ENV PORT 3000
 
-CMD ["node", "server.js"]
+CMD ["node", "server.js", "npm", "run", "start:prod"]
