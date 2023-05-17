@@ -1,10 +1,43 @@
-import NextAuth from "next-auth";
+import NextAuth, {
+  DefaultSession,
+  NextAuthOptions,
+  getServerSession,
+} from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 import VkProvider from "next-auth/providers/vk";
 import TwitchProvider from "next-auth/providers/twitch";
 import GitHubProvider from "next-auth/providers/github";
+import { GetServerSidePropsContext } from "next";
+import { prisma } from "y/server/server";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 
-export const authOptions = {
+declare module "next-auth" {
+  interface Session extends DefaultSession {
+    user: {
+      id: string;
+      // ...other properties
+      // role: UserRole;
+    } & DefaultSession["user"];
+  }
+
+  // interface User {
+  //   // ...other properties
+  //   // role: UserRole;
+  // }
+}
+
+export const authOptions: NextAuthOptions = {
+  callbacks: {
+    session: ({ session, user }) => ({
+      ...session,
+      user: {
+        ...session.user,
+        id: user.id,
+      },
+    }),
+  },
+  adapter: PrismaAdapter(prisma),
+
   // Configure one or more authentication providers
   providers: [
     DiscordProvider({
@@ -27,3 +60,10 @@ export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
 };
 export default NextAuth(authOptions);
+
+export const getServerAuthSession = (ctx: {
+  req: GetServerSidePropsContext["req"];
+  res: GetServerSidePropsContext["res"];
+}) => {
+  return getServerSession(ctx.req, ctx.res, authOptions);
+};
