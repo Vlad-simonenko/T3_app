@@ -1,19 +1,5 @@
 version: "3"
 services:
-  nest-api:
-    container_name: nest-api
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - 3000:3000
-    depends_on:
-      - postgres
-    env_file:
-      - .env
-    networks:
-      - t3-network
-
   postgres:
     image: postgres:10.3
     container_name: postgres

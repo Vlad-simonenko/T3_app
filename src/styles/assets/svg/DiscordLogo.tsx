@@ -1,6 +1,6 @@
 import React from "react";
 
-const DiscordLogo = () => {
+export const DiscordLogo = () => {
   return (
     <>
       <svg width="124" height="34" viewBox="0 0 124 34">
@@ -19,5 +19,3 @@ const DiscordLogo = () => {
     </>
   );
 };
-
-export default DiscordLogo;

@@ -1,7 +1,6 @@
 import { Input } from "antd";
 import React from "react";
 import styles from "./InputField.module.scss";
-import classNames from "classnames";
 import { WarningOutlined } from "@ant-design/icons";
 
 interface TActionButtonProps {

@@ -1,6 +1,6 @@
 import React from "react";
 
-const AddIcon = () => {
+export const AddIcon = () => {
   return (
     <>
       <svg
@@ -14,5 +14,3 @@ const AddIcon = () => {
     </>
   );
 };
-
-export default AddIcon;

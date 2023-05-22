@@ -1,9 +1,8 @@
-import { createTRPCRouter } from ".";
-import { profileRouter, userRouter } from "./routers";
+import { createTRPCRouter } from "~/server/api/trpc";
+import { taskRouter } from "./routers/tasks";
 
 export const appRouter = createTRPCRouter({
-  User: userRouter,
-  posts: profileRouter,
+  task: taskRouter,
 });
 
 export type AppRouter = typeof appRouter;

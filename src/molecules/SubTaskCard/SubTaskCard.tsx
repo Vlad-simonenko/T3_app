@@ -1,8 +1,8 @@
 import { Avatar, Button, Input } from "antd";
 import React, { useState } from "react";
 import styles from "./SubTaskCard.module.scss";
-import EditIcon from "y/styles/assets/svg/EditIcon";
 import { useSession } from "next-auth/react";
+import EditIcon from "~/styles/assets/svg/EditIcon";
 interface TTaskCardProps {
   text: string;
   onClick?: (event: React.MouseEvent<HTMLElement>) => void;

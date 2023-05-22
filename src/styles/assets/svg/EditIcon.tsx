@@ -1,6 +1,6 @@
 import React from "react";
 
-const EditIcon = () => {
+export const EditIcon = () => {
   return (
     <>
       <svg
@@ -14,5 +14,3 @@ const EditIcon = () => {
     </>
   );
 };
-
-export default EditIcon;

@@ -1,24 +1,42 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import styles from "./MainTaskCard.module.scss";
-import EditIcon from "y/styles/assets/svg/EditIcon";
-import AddIcon from "y/styles/assets/svg/AddIcon";
-import { ActionButton, ErrorMessage, InputField } from "y/atoms";
 import classNames from "classnames";
+import { ActionButton, Creator, InputField } from "~/atoms";
+import { useSession } from "next-auth/react";
+import { api } from "~/utils/api";
+import { AddIcon, EditIcon } from "~/styles";
+
 interface TMainTaskCardProps {
   mainTask: TMainTask[];
   setMainTask: Dispatch<SetStateAction<TMainTask[]>>;
+  subTask: any;
+  setSubTask: Dispatch<SetStateAction<TMainTask[]>>;
 }
 
-export type TMainTask = { id: number; title: string; description: string };
+export type TMainTask = {
+  id: number;
+  title: string;
+  content: string;
+  createdAt: Date;
+  user: { id: number; name: string; image: string };
+};
 
 export type TMappedMainTask = {
   id: number;
   title: string;
-  description: string;
+  content: string;
+  createdAt: Date;
+  user: { id: number; name: string; image: string };
 };
 
 export const MainTaskCard = (props: TMainTaskCardProps) => {
-  const { mainTask, setMainTask } = props;
+  const { mainTask } = props;
 
   const [mainTaskTitle, setMainTaskTitle] = useState("");
 
@@ -28,33 +46,74 @@ export const MainTaskCard = (props: TMainTaskCardProps) => {
 
   const [updMainTaskDescription, setUpdMainTaskDescription] = useState("");
 
-  const newPost = {
-    id: Date.now(),
-    title: mainTaskTitle,
-    description: mainTaskDescription,
-  };
-
   const [onClicked, setOnClicked] = useState(false);
 
-  const setTask = (newPost: TMainTask) => {
-    setMainTask([...mainTask, newPost]),
-      setMainTaskTitle(""),
+  const { data: session, status } = useSession();
+
+  const trpcUtils = api.useContext();
+
+  const createTask = api.task.create.useMutation({
+    onSuccess: () => {
+      setOnClicked(false);
+      setMainTaskTitle("");
       setMainTaskDescription("");
-  };
+      if (status !== "authenticated") return;
 
-  const [onEdit, setOnEdit] = useState(false);
+      trpcUtils.task.infiniteFeed.setInfiniteData({}, (oldData) => {
+        if (oldData == null) return;
+        return {
+          ...oldData,
+        };
+      });
+    },
+  });
 
-  const editPost = {
-    id: Date.now(),
-    title: updMainTaskTitle,
-    description: updMainTaskDescription,
-  };
-  const editTask = (id: number) => {
-    if (mainTask.find((editTask) => editTask.id === id)) {
-      setMainTask([...mainTask, editPost]),
-        setMainTaskTitle(""),
-        setMainTaskDescription("");
-    }
+  function handleCreate() {
+    createTask.mutate({
+      content: {
+        mainTaskTitle,
+        mainTaskDescription,
+      },
+      user_id: session?.user.id as any,
+    });
+  }
+
+  const updateTask = api.task.update.useMutation({
+    onSuccess: () => {
+      setOnEdit(false);
+      setUpdMainTaskTitle("");
+      setUpdMainTaskDescription("");
+      if (status !== "authenticated") return;
+
+      trpcUtils.task.infiniteFeed.setInfiniteData({}, (oldData) => {
+        if (oldData == null) return;
+        return {
+          ...oldData,
+        };
+      });
+    },
+  });
+
+  function handleUpdate(id: any) {
+    updateTask.mutate({
+      content: {
+        updMainTaskTitle,
+        updMainTaskDescription,
+      },
+      user_id: session?.user.id as any,
+      taskId: id,
+    });
+  }
+
+  const [targetId, setTargetId] = useState(0);
+
+  const [onEdit, setOnEdit] = useState(true);
+
+  const openTask = (id: number, taskTitle: string, taskDescription: string) => {
+    setTargetId(id);
+    setOnEdit(true);
+    setUpdMainTaskTitle(taskTitle);
+    setUpdMainTaskDescription(taskDescription);
   };
 
   return (
@@ -62,57 +121,54 @@ export const MainTaskCard = (props: TMainTaskCardProps) => {
       {mainTask?.map((task: TMappedMainTask) => (
         <div className={styles.mainTaskCardContant} key={task.id}>
           <div className={styles.mainTaskCardTitle}>{task.title}</div>
-          <div className={styles.mainTaskCardDescription}>
-            {task.description}
-          </div>
-          <div className={styles.mainTaskAddCardIcon}>
-            {mainTask?.find((editTask) => editTask?.id === task?.id) &&
-            onEdit ? (
+          <div className={styles.mainTaskCardDescription}>{task.content}</div>
+          <Creator imgSrc={task.user.image} />
+
+          {targetId === task.id ? (
+            <div className={styles.mainTaskAddCardIcon}>
               <>
                 <InputField
                   onFocus
                   placeholder={"Название задачи"}
                   onChange={setUpdMainTaskTitle}
-                  defaultValue={
-                    mainTask.find((editTask) => editTask.id === task.id)?.title
-                  }
                   value={updMainTaskTitle}
                 />
                 <InputField
                   placeholder={"Описание задачи"}
                   onChange={setUpdMainTaskDescription}
-                  defaultValue={
-                    mainTask.find((editTask) => editTask.id === task.id)
-                      ?.description
-                  }
                   value={updMainTaskDescription}
                 />
-                <ActionButton
-                  size="medium"
-                  margin="top"
-                  onClick={() => {
-                    editTask(task.id), setOnEdit(false);
-                  }}
-                  text={"Обновить"}
-                />
-                <ActionButton
-                  size="medium"
-                  margin="top"
-                  onClick={() => {
-                    setOnEdit(false);
-                  }}
-                  text={"Отмена"}
-                />
+                <div className={styles.buttonAddWrapper}>
+                  <ActionButton
+                    onClick={() => {
+                      handleUpdate(task.id);
+                    }}
+                    size="medium"
+                    margin="top"
+                    text={"Обновить"}
+                  />
+                  <ActionButton
+                    size="medium"
+                    margin="top"
+                    onClick={() => {
+                      setOnEdit(false);
+                      setTargetId(0);
+                    }}
+                    text={"Отмена"}
+                  />
+                </div>
               </>
-            ) : (
-              <div
-                onClick={() => setOnEdit(true)}
-                className={styles.mainTaskAddCardIcon}
-              >
-                {!onEdit ? <EditIcon /> : null}
-              </div>
-            )}
-          </div>
+            </div>
+          ) : (
+            <div
+              onClick={() => {
+                openTask(task.id, task.title, task.content);
+              }}
+              className={styles.mainTaskAddCardIcon}
+            >
+              <EditIcon />
+            </div>
+          )}
         </div>
       ))}
 
@@ -128,7 +184,6 @@ export const MainTaskCard = (props: TMainTaskCardProps) => {
         {onClicked ? (
           <>
             <InputField
-              onFocus
               placeholder={"Название задачи"}
               onChange={setMainTaskTitle}
               value={mainTaskTitle}
@@ -139,17 +194,9 @@ export const MainTaskCard = (props: TMainTaskCardProps) => {
               value={mainTaskDescription}
             />
             <ActionButton
+              onClick={handleCreate}
               size="medium"
               margin="top"
-              onClick={
-                mainTaskTitle.length !== 0
-                  ? () => {
-                      setTask(newPost), setOnClicked(false);
-                    }
-                  : () => {
-                      setOnClicked(false);
-                    }
-              }
               text={"Создать"}
             />
             <ActionButton
@@ -166,7 +213,7 @@ export const MainTaskCard = (props: TMainTaskCardProps) => {
             onClick={() => setOnClicked(true)}
             className={styles.mainTaskAddCardIcon}
           >
-            {!onClicked ? <AddIcon /> : null}
+            <AddIcon />
           </div>
         )}
       </div>

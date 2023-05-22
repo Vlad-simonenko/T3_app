@@ -61,7 +61,7 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./
 
 USER nextjs
-EXPOSE 3000
-ENV PORT 3000
+EXPOSE 5432
+ENV PORT 5432
 
-CMD ["node", "server.js", "npm", "run"]
+CMD ["node", "server.js"]

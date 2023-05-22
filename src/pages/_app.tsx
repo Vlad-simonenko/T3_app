@@ -1,22 +1,18 @@
-import { QueryClient } from "@tanstack/react-query";
-import { Session } from "next-auth";
+import { type AppType } from "next/app";
+import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
-import type { AppProps } from "next/app";
-import { useState } from "react";
-import "y/styles/globals.scss";
-import { api } from "y/utils/api";
+import { api } from "~/utils/api";
+import "~/styles/globals.scss";
 
-function MyApp({
+const MyApp: AppType<{ session: Session | null }> = ({
   Component,
-  pageProps,
-}: AppProps<{
-  session: Session;
-}>) {
+  pageProps: { session, ...pageProps },
+}) => {
   return (
-    <SessionProvider session={pageProps.session}>
+    <SessionProvider session={session}>
       <Component {...pageProps} />
     </SessionProvider>
   );
-}
+};
 
 export default api.withTRPC(MyApp);

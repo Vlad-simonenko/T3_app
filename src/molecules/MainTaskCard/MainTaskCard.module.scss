@@ -2,7 +2,7 @@
 
 %cardContent {
   border-radius: 10px;
-  padding: 20px;
+  padding: 20px 20px 5px 20px;
   width: 280px;
   min-height: 80px;
   background-color: white;
@@ -31,14 +31,22 @@
       $jContent: flex-start,
       $fWrap: wrap
     );
+    min-height: 90px;
     position: relative;
+
     @extend %cardContent;
     .mainTaskCardTitle {
       font-family: "Roboto";
       font-weight: 700;
       position: relative;
+      width: 90%;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .mainTaskCardDescription {
+      width: 90%;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     > svg {
       @extend %svgIcons;
@@ -54,9 +62,11 @@
       $jContent: flex-start,
       $fWrap: wrap
     );
+    min-height: 90px;
     @extend %cardContent;
     position: relative;
     opacity: 0.5;
+
     &.mainTaskCardAddContantActive {
       opacity: 1;
     }
@@ -68,6 +78,14 @@
       top: 15px;
       width: 28px;
       height: 28px;
+    }
+    .buttonAddWrapper {
+      @include flexContent(
+        $fDirection: row,
+        $aItems: center,
+        $jContent: space-between,
+        $fWrap: wrap
+      );
     }
   }
 }

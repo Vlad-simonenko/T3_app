@@ -1,13 +1,11 @@
 import { Layout, MenuProps, Typography } from "antd";
-import styles from "../styles/index.module.scss";
 import { type NextPage } from "next";
 import { signOut, useSession } from "next-auth/react";
-import { CardList, HeaderContent } from "y/organism";
-import { Sider } from "y/molecules";
-import { PrismaClient } from "@prisma/client";
-import { api } from "y/utils/api";
-import { userRouter } from "y/server/api/routers";
-import { useRouter } from "next/router";
+import styles from "../styles/index.module.scss";
+import { CardList, HeaderContent } from "~/organism";
+import { Sider } from "~/molecules";
+
+const TABS = ["Recent", "Following"] as const;
 
 const Home: NextPage = () => {
   const { data: session, status } = useSession();
@@ -33,8 +31,6 @@ const Home: NextPage = () => {
   ];
 
   const { Header } = Layout;
-  const helloWithArgs = api.User.getById.useQuery();
-  console.log(helloWithArgs.data);
 
   return (
     <Layout className={styles.contentWrapper}>
@@ -48,4 +44,5 @@ const Home: NextPage = () => {
     </Layout>
   );
 };
+
 export default Home;

@@ -2,10 +2,10 @@ import { Avatar, Dropdown } from "antd";
 import React from "react";
 import styles from "./HeaderContent.module.scss";
 import { Session } from "next-auth/core/types";
-import { ActionButton } from "y/atoms";
-import Logo from "y/styles/assets/svg/Logo";
 import { DownOutlined } from "@ant-design/icons";
 import { ItemType } from "antd/es/menu/hooks/useItems";
+import { ActionButton } from "~/atoms";
+import { Logo } from "~/styles";
 
 interface THeaderContentProps {
   session: Session | null;
