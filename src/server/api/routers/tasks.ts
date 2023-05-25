@@ -9,22 +9,6 @@ import {
 } from "../trpc";
 
 export const taskRouter = createTRPCRouter({
-  infiniteProfileFeed: publicProcedure
-    .input(
-      z.object({
-        userId: z.number(),
-        limit: z.number().optional(),
-        cursor: z.object({ id: z.number(), createdAt: z.date() }).optional(),
-      })
-    )
-    .query(async ({ input: { userId, cursor }, ctx }) => {
-      return await getInfiniteTasks({
-        ctx,
-        cursor,
-        whereClause: { userId },
-      });
-    }),
-
   infiniteFeed: publicProcedure
     .input(
       z.object({
@@ -65,11 +49,44 @@ export const taskRouter = createTRPCRouter({
         data: {
           title: content.content.updMainTaskTitle,
           content: content.content.updMainTaskDescription,
+          published: true,
+        },
+      });
+      return tasks;
+    }),
+
+  createSubTask: protectedProcedure
+    .input(
+      z.object({ content: z.any(), user_id: z.number(), taskId: z.number() })
+    )
+    .mutation(async ({ input: content, ctx }) => {
+      const subTasks = await ctx.prisma.subtasks.create({
+        data: {
+          title: content.content.mainSubTaskTitle,
+          content: content.content.mainSubTaskDescription,
+          userId: ctx.session.user.id as unknown as number,
+          published: true,
+          taskId: content.taskId,
+        },
+      });
+
+      return subTasks;
+    }),
+
+  updateSubtask: protectedProcedure
+    .input(
+      z.object({ content: z.any(), user_id: z.number(), taskId: z.number() })
+    )
+    .mutation(async ({ input: content, ctx }) => {
+      const tasks = await ctx.prisma.subtasks.update({
+        where: { id: content.taskId },
+        data: {
+          title: content.content.updMainSubTaskTitle,
+          content: content.content.updMainSubTaskDesc,
           userId: ctx.session.user.id as unknown as number,
           published: true,
         },
       });
-
       return tasks;
     }),
 });
@@ -92,6 +109,7 @@ async function getInfiniteTasks({
       title: true,
       content: true,
       createdAt: true,
+      Subtasks: true,
       author: {
         select: { name: true, id: true, image: true },
       },
@@ -106,6 +124,7 @@ async function getInfiniteTasks({
         content: task.content,
         createdAt: task.createdAt,
         user: task.author,
+        Subtasks: task.Subtasks,
       };
     }),
   };

@@ -1,16 +1,12 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import styles from "./MainTaskCard.module.scss";
 import classNames from "classnames";
 import { ActionButton, Creator, InputField } from "~/atoms";
 import { useSession } from "next-auth/react";
 import { api } from "~/utils/api";
 import { AddIcon, EditIcon } from "~/styles";
+import { SubTaskCard } from "..";
+import type { DragEndEvent } from "@dnd-kit/core";
 
 interface TMainTaskCardProps {
   mainTask: TMainTask[];
@@ -24,6 +20,7 @@ export type TMainTask = {
   title: string;
   content: string;
   createdAt: Date;
+  Subtasks: TMainTask[];
   user: { id: number; name: string; image: string };
 };
 
@@ -32,6 +29,7 @@ export type TMappedMainTask = {
   title: string;
   content: string;
   createdAt: Date;
+  Subtasks: TMainTask[];
   user: { id: number; name: string; image: string };
 };
 
@@ -46,6 +44,14 @@ export const MainTaskCard = (props: TMainTaskCardProps) => {
 
   const [updMainTaskDescription, setUpdMainTaskDescription] = useState("");
 
+  const [mainSubTaskTitle, setMainSubTaskTitle] = useState("");
+
+  const [mainSubTaskDescription, setMainSubTaskDescription] = useState("");
+
+  const [updMainSubTaskTitle, setUpdMainSubTaskTitle] = useState("");
+
+  const [updMainSubTaskDesc, setUpdMainSubTaskDesc] = useState("");
+
   const [onClicked, setOnClicked] = useState(false);
 
   const { data: session, status } = useSession();
@@ -53,7 +59,7 @@ export const MainTaskCard = (props: TMainTaskCardProps) => {
   const trpcUtils = api.useContext();
 
   const createTask = api.task.create.useMutation({
-    onSuccess: () => {
+    onSuccess: (newTask) => {
       setOnClicked(false);
       setMainTaskTitle("");
       setMainTaskDescription("");
@@ -61,6 +67,9 @@ export const MainTaskCard = (props: TMainTaskCardProps) => {
 
       trpcUtils.task.infiniteFeed.setInfiniteData({}, (oldData) => {
         if (oldData == null) return;
+        console.log(newTask);
+
+        trpcUtils.task.invalidate();
         return {
           ...oldData,
         };
@@ -87,6 +96,8 @@ export const MainTaskCard = (props: TMainTaskCardProps) => {
 
       trpcUtils.task.infiniteFeed.setInfiniteData({}, (oldData) => {
         if (oldData == null) return;
+
+        trpcUtils.task.invalidate();
         return {
           ...oldData,
         };
@@ -99,6 +110,65 @@ export const MainTaskCard = (props: TMainTaskCardProps) => {
       content: {
         updMainTaskTitle,
         updMainTaskDescription,
+      },
+      user_id: session?.user.id as any,
+      taskId: id,
+    });
+  }
+
+  const createSubTask = api.task.createSubTask.useMutation({
+    onSuccess: () => {
+      setOnClicked(false);
+      setMainSubTaskTitle("");
+      setMainSubTaskDescription("");
+      if (status !== "authenticated") return;
+
+      trpcUtils.task.infiniteFeed.setInfiniteData({}, (oldData) => {
+        if (oldData == null) return;
+
+        trpcUtils.task.invalidate();
+        return {
+          ...oldData,
+        };
+      });
+    },
+  });
+
+  function handleSubtaskCreate(id: number) {
+    createSubTask.mutate({
+      content: {
+        mainSubTaskTitle,
+        mainSubTaskDescription,
+      },
+      user_id: session?.user.id as any,
+      taskId: id,
+    });
+  }
+
+  const updateSubTask = api.task.updateSubtask.useMutation({
+    onSuccess: () => {
+      setOnEdit(false);
+      setUpdMainSubTaskTitle("");
+      setUpdMainSubTaskDesc("");
+      if (status !== "authenticated") return;
+
+      trpcUtils.task.infiniteFeed.setInfiniteData({}, (oldData) => {
+        if (oldData == null) return;
+
+        trpcUtils.task.invalidate();
+
+        return {
+          ...oldData,
+        };
+      });
+    },
+  });
+
+  function handleSubtaskUpdate(id: any) {
+    updateSubTask.mutate({
+      content: {
+        updMainSubTaskTitle,
+        updMainSubTaskDesc,
       },
       user_id: session?.user.id as any,
       taskId: id,
@@ -122,9 +192,19 @@ export const MainTaskCard = (props: TMainTaskCardProps) => {
         <div className={styles.mainTaskCardContant} key={task.id}>
           <div className={styles.mainTaskCardTitle}>{task.title}</div>
           <div className={styles.mainTaskCardDescription}>{task.content}</div>
-          <Creator imgSrc={task.user.image} />
+          <div className={styles.mainTaskCardFooter}>
+            <Creator imgSrc={task.user.image} />
+            {task?.Subtasks?.length === 0 ? null : (
+              <div className={styles.mainTaskCardSubtasksCount}>
+                Subtasks
+                <p className={styles.mainTaskCardFooterCount}>
+                  {task?.Subtasks?.length}
+                </p>
+              </div>
+            )}
+          </div>
 
-          {targetId === task.id ? (
+          {targetId === task.id && onEdit ? (
             <div className={styles.mainTaskAddCardIcon}>
               <>
                 <InputField
@@ -158,6 +238,20 @@ export const MainTaskCard = (props: TMainTaskCardProps) => {
                   />
                 </div>
               </>
+              <SubTaskCard
+                subtask={task.Subtasks}
+                taskId={task.id}
+                handleSubtaskCreate={handleSubtaskCreate}
+                handleSubtaskUpdate={handleSubtaskUpdate}
+                mainSubTaskTitle={mainSubTaskTitle}
+                mainSubTaskDescription={mainSubTaskDescription}
+                updMainSubTaskTitle={updMainSubTaskTitle}
+                updMainSubTaskDesc={updMainSubTaskDesc}
+                setMainSubTaskTitle={setMainSubTaskTitle}
+                setMainSubTaskDescription={setMainSubTaskDescription}
+                setUpdMainSubTaskTitle={setUpdMainSubTaskTitle}
+                setUpdMainSubTaskDesc={setUpdMainSubTaskDesc}
+              />
             </div>
           ) : (
             <div

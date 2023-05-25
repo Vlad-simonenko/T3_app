@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import styles from "./CardList.module.scss";
 import { Session } from "next-auth/core/types";
-import { MainTaskCard, TMainTask } from "~/molecules";
+import { MainTaskCard } from "~/molecules";
 import { api } from "~/utils/api";
+import { AnyARecord } from "dns";
+import { Divider } from "~/atoms";
 
 interface TCardListProps {
   session: Session | null;
@@ -12,7 +14,6 @@ export const CardList = (props: TCardListProps) => {
   const { session } = props;
   const tasks = api.task.infiniteFeed.useInfiniteQuery({});
   const parsedTasks = tasks.data?.pages.flatMap((page) => page.tasks);
-  const [subTask, setSubtask] = useState<any[]>([]);
 
   return (
     <div className={styles.cardListWrapper}>
@@ -21,14 +22,10 @@ export const CardList = (props: TCardListProps) => {
           <p className={styles.cardListNameText}>field 1</p>
         </div>
       </div>
+      <Divider />
       <div className={styles.cardListMain}>
-        <MainTaskCard
-          subTask={subTask}
-          setSubTask={setSubtask}
-          mainTask={parsedTasks}
-        />
+        <MainTaskCard mainTask={parsedTasks} />
       </div>
-      <div className={styles.cardListFooter}> footer</div>
     </div>
   );
 };
