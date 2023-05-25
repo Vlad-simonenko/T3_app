@@ -5,8 +5,6 @@ import styles from "../styles/index.module.scss";
 import { CardList, HeaderContent } from "~/organism";
 import { Sider } from "~/molecules";
 
-const TABS = ["Recent", "Following"] as const;
-
 const Home: NextPage = () => {
   const { data: session, status } = useSession();
 

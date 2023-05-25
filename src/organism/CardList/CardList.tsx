@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "./CardList.module.scss";
 import { Session } from "next-auth/core/types";
 import { MainTaskCard } from "~/molecules";
 import { api } from "~/utils/api";
-import { AnyARecord } from "dns";
 import { Divider } from "~/atoms";
 
 interface TCardListProps {

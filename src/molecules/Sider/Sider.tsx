@@ -1,4 +1,4 @@
-import { Avatar, Button, Image, Input, Layout, Menu } from "antd";
+import { Image, Layout, Menu } from "antd";
 import React, { useState } from "react";
 import styles from "./Sider.module.scss";
 

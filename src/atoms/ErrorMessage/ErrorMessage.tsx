@@ -1,7 +1,5 @@
-import { Alert, Button } from "antd";
 import React from "react";
 import styles from "./ErrorMessage.module.scss";
-import classNames from "classnames";
 
 interface TErrorMessageProps {
   text: string | undefined;

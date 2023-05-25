@@ -1,7 +1,7 @@
 import { Collapse } from "antd";
 import React, { useEffect, useState } from "react";
 import styles from "./SubTaskCard.module.scss";
-import { AddIcon, EditIcon } from "~/styles";
+import { AddIcon } from "~/styles";
 import { TMainTask } from "..";
 import moment from "moment";
 import { ActionButton, InputField } from "~/atoms";

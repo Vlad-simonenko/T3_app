@@ -6,7 +6,6 @@ import { useSession } from "next-auth/react";
 import { api } from "~/utils/api";
 import { AddIcon, EditIcon } from "~/styles";
 import { SubTaskCard } from "..";
-import type { DragEndEvent } from "@dnd-kit/core";
 
 interface TMainTaskCardProps {
   mainTask: TMainTask[];
