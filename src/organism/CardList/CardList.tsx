@@ -18,7 +18,7 @@ export const CardList = (props: TCardListProps) => {
     <div className={styles.cardListWrapper}>
       <div className={styles.cardListHeader}>
         <div className={styles.cardListNameWrapper}>
-          <p className={styles.cardListNameText}>field 1</p>
+          <p className={styles.cardListNameText}>T3 app</p>
         </div>
       </div>
       <Divider />

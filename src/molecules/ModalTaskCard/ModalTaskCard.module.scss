@@ -1,0 +1,14 @@
+.modalTaskWrapper {
+  position: relative;
+  width: 100%;
+  .modalTaskWrapperEditIcon {
+    position: absolute;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+    > svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+}

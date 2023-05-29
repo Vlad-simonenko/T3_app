@@ -1,10 +1,23 @@
+@import "src/styles/assets/mixin.scss";
+
 .cardContainer {
+  padding-top: 20px;
+  padding-bottom: 20px;
   .mainCollapsTable {
     width: 100%;
     border-radius: 10px;
     border: 1px solid white;
     animation: border 3s infinite alternate;
     margin: 2px 0;
+    .collapsTableHeader {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .collapsTableText {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
   .cardBodyLine {
     width: 100%;
@@ -14,24 +27,38 @@
   }
 
   .addSubtasks {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    flex-direction: row-reverse;
-    animation: border 3s infinite alternate;
+    @include flexContent(
+      $fDirection: column,
+      $aItems: space-between,
+      $jContent: flex-start,
+      $fWrap: nowrap
+    );
+    animation: addBorder 2s infinite alternate;
     border-radius: 10px;
     border: 1px solid white;
-    animation: border 3s infinite alternate;
-    margin: 2px 0;
+    padding: 10px;
+    margin-bottom: 20px;
     cursor: pointer;
-    > svg {
+    .subtasakText {
+      @include flexContent(
+        $fDirection: row-reverse,
+        $aItems: center,
+        $jContent: center,
+        $fWrap: nowrap
+      );
+    }
+    > .subtasakText > svg {
       width: 25px;
       height: 25px;
     }
   }
   .subtaskButtonContainer {
-    display: flex;
-    justify-content: space-between;
+    @include flexContent(
+      $fDirection: row,
+      $aItems: center,
+      $jContent: space-between,
+      $fWrap: nowrap
+    );
   }
 }
 
@@ -44,5 +71,18 @@
   }
   100% {
     border-color: aquamarine;
+  }
+}
+
+@keyframes addBorder {
+  0% {
+    border-color: pink;
+  }
+
+  50% {
+    border-color: palevioletred;
+  }
+  100% {
+    border-color: paleturquoise;
   }
 }

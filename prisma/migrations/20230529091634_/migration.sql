@@ -25,6 +25,7 @@ CREATE TABLE "Session" (
     "sessionToken" TEXT NOT NULL,
     "userId" INTEGER NOT NULL,
     "expires" TIMESTAMP(3) NOT NULL,
+    "email" TEXT,
 
     CONSTRAINT "Session_pkey" PRIMARY KEY ("id")
 );

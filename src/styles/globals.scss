@@ -97,3 +97,8 @@ h6 {
   position: relative !important;
   background-color: #280029 !important;
 }
+.ant-collapse-header-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

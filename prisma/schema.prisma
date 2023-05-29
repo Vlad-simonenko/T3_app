@@ -73,7 +73,8 @@ model Task {
   author    User       @relation(fields: [userId], references: [id])
   Subtasks  Subtasks[]
   createdAt DateTime @default(now())
-
+  addedUsers Int[]
+  
   @@unique([createdAt, id])
 }
 
@@ -87,6 +88,8 @@ model Subtasks {
   Task      Task?   @relation(fields: [taskId], references: [id])
   taskId    Int?
   createdAt DateTime @default(now())
+  addedUsers Int[]
+
 
   @@unique([createdAt, id])
 }

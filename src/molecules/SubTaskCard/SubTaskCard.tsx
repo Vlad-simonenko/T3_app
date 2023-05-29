@@ -5,36 +5,27 @@ import { AddIcon } from "~/styles";
 import { TMainTask } from "..";
 import moment from "moment";
 import { ActionButton, InputField } from "~/atoms";
+import { useTasksTrcp } from "~/hooks/useTasksTrcp";
 interface TSubtaskProps {
   subtask: TMainTask[];
-  handleSubtaskCreate: (id: number) => void;
-  handleSubtaskUpdate: (id: number) => void;
-  mainSubTaskTitle: string;
-  mainSubTaskDescription: string;
-  updMainSubTaskTitle: string;
-  updMainSubTaskDesc: string;
-  setMainSubTaskTitle: (title: string) => void;
-  setMainSubTaskDescription: (title: string) => void;
-  setUpdMainSubTaskTitle: (title: string) => void;
-  setUpdMainSubTaskDesc: (title: string) => void;
   taskId: number;
 }
 
 export const SubTaskCard = (props: TSubtaskProps) => {
+  const { subtask, taskId } = props;
+
   const {
-    subtask,
-    taskId,
     handleSubtaskCreate,
     handleSubtaskUpdate,
     mainSubTaskTitle,
     mainSubTaskDescription,
-    setMainSubTaskTitle,
-    setMainSubTaskDescription,
     updMainSubTaskTitle,
     updMainSubTaskDesc,
+    setMainSubTaskTitle,
+    setMainSubTaskDescription,
     setUpdMainSubTaskTitle,
     setUpdMainSubTaskDesc,
-  } = props;
+  } = useTasksTrcp();
 
   const { Panel } = Collapse;
 
@@ -51,12 +42,17 @@ export const SubTaskCard = (props: TSubtaskProps) => {
     setMainSubTaskDescription("");
   }, [open]);
 
+  const onChange = (taskId: number, title: string, desc: string) => {
+    setUpdMainSubTaskTitle(title);
+    setUpdMainSubTaskDesc(desc);
+  };
+
   return (
     <>
       <div className={styles.cardContainer}>
         <>
           {open ? (
-            <>
+            <div className={styles.addSubtasks}>
               <InputField
                 onChange={setMainSubTaskTitle}
                 value={mainSubTaskTitle}
@@ -81,7 +77,7 @@ export const SubTaskCard = (props: TSubtaskProps) => {
                   size={"medium"}
                 />
               </div>
-            </>
+            </div>
           ) : (
             <div
               onClick={() => {
@@ -89,20 +85,30 @@ export const SubTaskCard = (props: TSubtaskProps) => {
               }}
               className={styles.addSubtasks}
             >
-              <p> add subtask</p>
-              <AddIcon />
+              <p className={styles.subtasakText}>
+                add subtask
+                <AddIcon />
+              </p>
             </div>
           )}
         </>
-        {subtask?.length > 0 ? (
-          subtask?.map((task: TMainTask) => (
+
+        {subtask?.length > 0 &&
+          subtask?.map((task: any) => (
             <div key={task.id}>
               <Collapse
+                onChange={() => {
+                  onChange(task.id, task.title, task.content);
+                }}
+                accordion
                 className={styles.mainCollapsTable}
-                defaultActiveKey={["0"]}
               >
-                <Panel header={task.title} key={task.id}>
-                  <p>{task.content}</p>
+                <Panel
+                  className={styles.collapsTableHeader}
+                  header={task.title}
+                  key={task.id}
+                >
+                  <p className={styles.collapsTableText}>{task.content}</p>
                   <hr className={styles.cardBodyLine} />
                   <div className={styles.cardBodyDate}>
                     {moment(task.createdAt).format("DD MMMM YYYY, h:mm")}
@@ -118,7 +124,7 @@ export const SubTaskCard = (props: TSubtaskProps) => {
                   <div className={styles.subtaskButtonContainer}>
                     <ActionButton
                       onClick={() => {
-                        handleSubtaskUpdate(taskId);
+                        handleSubtaskUpdate(task.id);
                       }}
                       text={"Обновить"}
                       size={"medium"}
@@ -134,10 +140,7 @@ export const SubTaskCard = (props: TSubtaskProps) => {
                 </Panel>
               </Collapse>
             </div>
-          ))
-        ) : (
-          <></>
-        )}
+          ))}
       </div>
     </>
   );

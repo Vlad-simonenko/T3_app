@@ -33,8 +33,12 @@
     );
     min-height: 90px;
     position: relative;
-
     @extend %cardContent;
+
+    .modalWrapper {
+      width: 100%;
+    }
+
     .mainTaskCardTitle {
       font-family: "Roboto";
       font-weight: 700;
@@ -65,6 +69,18 @@
       .mainTaskCardFooterCount {
         font-weight: 700;
         text-align: center;
+      }
+      .mainTaskCardFooterUsers {
+        @include flexContent(
+          $fDirection: row,
+          $aItems: center,
+          $jContent: space-between,
+          $fWrap: wrap
+        );
+        > div > svg {
+          width: 25px;
+          height: 25px;
+        }
       }
     }
   }

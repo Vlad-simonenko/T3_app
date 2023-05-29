@@ -89,6 +89,28 @@ export const taskRouter = createTRPCRouter({
       });
       return tasks;
     }),
+
+  addUsers: protectedProcedure
+    .input(
+      z.object({
+        content: z.any(),
+        user_id: z.number(),
+        taskId: z.number(),
+        usersId: z.any(),
+      })
+    )
+    .mutation(async ({ input: content, ctx }) => {
+      const tasks = await ctx.prisma.task.create({
+        data: {
+          title: content.content.updMainSubTaskTitle,
+          content: content.content.updMainSubTaskDesc,
+          userId: ctx.session.user.id as unknown as number,
+          published: true,
+          addedUsers: content.taskId,
+        },
+      });
+      return tasks;
+    }),
 });
 
 async function getInfiniteTasks({
