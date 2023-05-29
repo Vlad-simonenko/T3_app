@@ -67,7 +67,7 @@ export const MainTaskCard = (props: TMainTaskCardProps) => {
 
   return (
     <div className={styles.mainTaskCardWrapper}>
-      {mainTask?.map((task: any) => (
+      {mainTask?.map((task) => (
         <div className={styles.mainTaskCardContant} key={task.id}>
           <ModalTaskCard
             openTask={openTask}

@@ -2,7 +2,7 @@ import { Modal } from "antd";
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { EditIcon } from "~/styles";
 import styles from "./ModalTaskCard.module.scss";
-import { InputField, ActionButton } from "~/atoms";
+import { InputField } from "~/atoms";
 import { SubTaskCard } from "../SubTaskCard";
 
 interface TModalTaskCardProps {
@@ -18,7 +18,7 @@ interface TModalTaskCardProps {
   handleUpdate: (id: any) => void;
   setOnEdit: Dispatch<SetStateAction<boolean>>;
   setTargetId: Dispatch<SetStateAction<number>>;
-  description: string;
+  description: string | null;
 }
 
 export const ModalTaskCard = (props: TModalTaskCardProps) => {
